@@ -17,6 +17,14 @@ class TaskManager:
         """ Get the next available id """
         return 1 if not tasks else max(t["id"] for t in tasks) + 1
 
+    def get_tasks(self) -> List[Dict[str, Any]]:
+        """ Get all tasks from file """
+        try:
+            with open(self.path,"r",encoding="utf-8") as tf:
+                return json.load(tf)
+        except (OSError, json.JSONDecodeError):
+            return []
+
     # -----------------------------------------
     #  Public Methods
     # -----------------------------------------
@@ -34,13 +42,7 @@ class TaskManager:
         
         """
 
-        try:
-            with open(self.path,"r",encoding="utf-8") as tf:
-                tasks =json.load(tf)
-        except (OSError, json.JSONDecodeError):
-            tasks = []
-
-
+        tasks = self.get_tasks()
         new_id = self._next_id(tasks)  # get next available id
         timestamp = datetime.now().isoformat(timespec="seconds") 
         
@@ -65,12 +67,7 @@ class TaskManager:
     def list_tasks(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
         """ List all tasks """
         
-        try:
-            with open(self.path,"r",encoding="utf-8") as tf:
-                tasks = json.load(tf)
-        except (OSError, json.JSONDecodeError):
-            tasks = []
-
+        tasks = self.get_tasks()
         if status is None:
             return tasks
         if status not in {"todo", "in-progress","done"}:
