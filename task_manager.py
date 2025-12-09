@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, List, Optional, Any
 
 class TaskManager:
     """ Core task management logic """
@@ -62,12 +62,18 @@ class TaskManager:
 
         return task
 
-    def list_tasks(self) -> List[Dict[str, Any]]:
+    def list_tasks(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
         """ List all tasks """
+        
         try:
             with open(self.path,"r",encoding="utf-8") as tf:
                 tasks = json.load(tf)
         except (OSError, json.JSONDecodeError):
             tasks = []
-        return tasks
+
+        if status is None:
+            return tasks
+        if status not in {"todo", "in-progress","done"}:
+            raise ValueError(f"Invalid status filter: {status}")
         
+        return [t for t in tasks if t.get("status") == status]  # filter tasks by status

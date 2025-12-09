@@ -45,3 +45,22 @@ def test_list_all_tasks(tmp_path):
     assert all_tasks[0]["description"] == "Buy milk"
     assert all_tasks[1]["description"] == "Buy eggs"
     assert all_tasks[2]["description"] == "Buy bread"
+
+
+def test_list_tasks_filtered_by_status(tmp_path):
+    tm = make_tm(tmp_path)
+
+    t1 = tm.add_task("Buy milk")
+    t2 = tm.add_task("Buy eggs")
+    t3 = tm.add_task("Buy bread")
+
+    # for now, only todo is supported, once update_task is implemented, we can test other statuses
+    todo_tasks = tm.list_tasks("todo")
+    wip_tasks = tm.list_tasks("in-progress") 
+    done_tasks = tm.list_tasks("done")
+    
+    assert isinstance(todo_tasks, list)
+    assert len(todo_tasks) == 3
+    assert {t["id"] for t in todo_tasks} == {t1["id"], t2["id"], t3["id"]}
+
+    
