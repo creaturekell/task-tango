@@ -49,6 +49,21 @@ def command_update(args: argparse.Namespace) -> None:
         print(f"Error: {e}")
         return
 
+def command_delete(args: argparse.Namespace) -> None:
+    """ Delete an existing task """
+    try:
+        task_id = int(args.id)
+    except ValueError:
+        print(f"Error: Invalid task ID: {args.id}")
+        return
+    
+    try:
+        tm.delete_task(task_id)
+        print(f"Task deleted: {task_id}")
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
 
 def command_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -72,6 +87,7 @@ def command_parser() -> argparse.ArgumentParser:
     # delete
     p_delete = subparsers.add_parser("delete", help="Delete a task")
     p_delete.add_argument("id", help="ID of the task to delete")
+    p_delete.set_defaults(func=command_delete)
 
     # mark-in-progress
     p_mip = subparsers.add_parser("mark-in-progress", help="Mark task as in progress")

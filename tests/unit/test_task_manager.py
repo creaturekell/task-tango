@@ -78,3 +78,16 @@ def test_update_task_changes_description_and_updated_at(tmp_path):
     # persisted
     tasks = tm.get_tasks()
     assert tasks[0]["description"] == "New description"
+
+def test_delete_task_removes_task_from_list(tmp_path):
+    tm = make_tm(tmp_path)
+
+    t1 = tm.add_task("Buy milk")
+    t2 = tm.add_task("Buy eggs")
+    t3 = tm.add_task("Buy bread")
+
+    tm.delete_task(t2["id"])
+
+    tasks = tm.list_tasks()
+    assert len(tasks) == 2
+    assert {t["id"] for t in tasks} == {t1["id"], t3["id"]}

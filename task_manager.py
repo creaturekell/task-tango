@@ -102,3 +102,15 @@ class TaskManager:
 
         self.save_tasks(tasks)
         return task
+
+    def delete_task(self, id: int) -> None:
+        """ Delete an existing task """
+
+        tasks = self.get_tasks()
+        task = self._find_task(tasks, id)
+        if task is None:
+            raise ValueError(f"Task with id {id} not found.")
+        
+        tasks.remove(task)
+        self.save_tasks(tasks)
+        return task
