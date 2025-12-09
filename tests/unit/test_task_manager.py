@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from time import sleep
 
 import pytest
 from task_manager import TaskManager
@@ -63,4 +64,17 @@ def test_list_tasks_filtered_by_status(tmp_path):
     assert len(todo_tasks) == 3
     assert {t["id"] for t in todo_tasks} == {t1["id"], t2["id"], t3["id"]}
 
-    
+def test_update_task_changes_description_and_updated_at(tmp_path):
+    tm = make_tm(tmp_path)
+
+    original = tm.add_task("Old description")
+    sleep(3)
+    updated = tm.update_task(original["id"], "New description")
+
+    assert updated["id"] == original["id"]
+    assert updated["description"] == "New description"
+    assert updated["updatedAt"] != original["updatedAt"]
+
+    # persisted
+    tasks = tm.get_tasks()
+    assert tasks[0]["description"] == "New description"

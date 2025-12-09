@@ -24,6 +24,25 @@ class TaskManager:
                 return json.load(tf)
         except (OSError, json.JSONDecodeError):
             return []
+    
+    def _get_timestamp(self) -> str:
+        """ Get the current timestamp """
+        return datetime.now().isoformat(timespec="seconds")
+
+    def _find_task(self, tasks: List[Dict[str, Any]], task_id: int) -> Optional[Dict[str, Any]]:
+        """ Find a task by id """
+        for t in tasks:
+            if t.get("id") == task_id:
+                return t
+        return None
+
+    def save_tasks(self, tasks: List[Dict[str, Any]]) -> None:
+        """ Save tasks to file """
+        try:
+            with open(self.path,"w", encoding="utf-8") as tf:
+                json.dump(tasks, tf, indent=2)
+        except (OSError, json.JSONDecodeError):
+            raise ValueError(f"Failed to save tasks to {self.path}")
 
     # -----------------------------------------
     #  Public Methods
@@ -44,7 +63,7 @@ class TaskManager:
 
         tasks = self.get_tasks()
         new_id = self._next_id(tasks)  # get next available id
-        timestamp = datetime.now().isoformat(timespec="seconds") 
+        timestamp = self._get_timestamp()
         
         task = {
             "id": new_id,
@@ -55,12 +74,7 @@ class TaskManager:
         }
 
         tasks.append(task)
-
-        try:
-            with open(self.path,"w") as tf:
-                json.dump(tasks, tf, indent=2)
-        except (OSError, json.JSONDecodeError):
-            raise ValueError(f"Failed to save tasks to {self.path}")
+        self.save_tasks(tasks)
 
         return task
 
@@ -74,3 +88,17 @@ class TaskManager:
             raise ValueError(f"Invalid status filter: {status}")
         
         return [t for t in tasks if t.get("status") == status]  # filter tasks by status
+
+    def update_task(self, id: int, updated_description: [str]) -> Dict[str, Any]:
+        """ Update an existing task """
+
+        tasks = self.get_tasks()
+        task = self._find_task(tasks, id)
+        if task is None:
+            raise ValueError(f"Task with id {id} not found.")
+        
+        task["description"] = updated_description
+        task["updatedAt"] = self._get_timestamp()
+
+        self.save_tasks(tasks)
+        return task

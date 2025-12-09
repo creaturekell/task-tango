@@ -33,6 +33,23 @@ def command_list(args: argparse.Namespace) -> None:
 
     print("\n")
 
+
+def update_task(args: argparse.Namespace) -> None:
+    """ Update an existing task """
+    try: 
+        task_id = int(args.id)
+    except ValueError:
+        print(f"Error: Invalid task ID: {args.id}")
+        return
+    
+    try:
+        t = tm.update_task(task_id, args.description)
+        print(f"Task updated: {t['id']} - {t['description']} - {t['status']}")
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
+
 def command_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Task Manager CLI.",
@@ -50,6 +67,7 @@ def command_parser() -> argparse.ArgumentParser:
     p_update = subparsers.add_parser("update", help="Update an existing task")
     p_update.add_argument("id", help="ID of the task to update")
     p_update.add_argument("description", help="New description")
+    p_update.set_defaults(func=update_task)
 
     # delete
     p_delete = subparsers.add_parser("delete", help="Delete a task")
