@@ -34,7 +34,7 @@ def command_list(args: argparse.Namespace) -> None:
     print("\n")
 
 
-def update_task(args: argparse.Namespace) -> None:
+def command_update(args: argparse.Namespace) -> None:
     """ Update an existing task """
     try: 
         task_id = int(args.id)
@@ -67,7 +67,7 @@ def command_parser() -> argparse.ArgumentParser:
     p_update = subparsers.add_parser("update", help="Update an existing task")
     p_update.add_argument("id", help="ID of the task to update")
     p_update.add_argument("description", help="New description")
-    p_update.set_defaults(func=update_task)
+    p_update.set_defaults(func=command_update)
 
     # delete
     p_delete = subparsers.add_parser("delete", help="Delete a task")
