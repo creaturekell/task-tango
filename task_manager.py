@@ -61,3 +61,13 @@ class TaskManager:
             raise ValueError(f"Failed to save tasks to {self.path}")
 
         return task
+
+    def list_tasks(self) -> List[Dict[str, Any]]:
+        """ List all tasks """
+        try:
+            with open(self.path,"r",encoding="utf-8") as tf:
+                tasks = json.load(tf)
+        except (OSError, json.JSONDecodeError):
+            tasks = []
+        return tasks
+        

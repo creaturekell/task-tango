@@ -9,6 +9,11 @@ def command_add(args: argparse.Namespace) -> None:
     t = tm.add_task(args.description)
     print(f"Task added: {t['id']} - {t['description']} - {t['status']}")
 
+def command_list(args: argparse.Namespace) -> None:
+    """ List all tasks """
+    tasks = tm.list_tasks()
+    for t in tasks:
+        print(f"{t['id']} - {t['description']} - {t['status']}")
 
 def command_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -43,6 +48,7 @@ def command_parser() -> argparse.ArgumentParser:
     # list
     p_list = subparsers.add_parser("list", help="List tasks")
     p_list.add_argument("status", nargs="?", help="Optional status filter: todo, in-progress, done")
+    p_list.set_defaults(func=command_list)
 
     return parser 
 
