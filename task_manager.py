@@ -35,10 +35,11 @@ class TaskManager:
         """
 
         try:
-            with open(self.path,"r") as tf:
-                tasks =json.loads(tf)
+            with open(self.path,"r",encoding="utf-8") as tf:
+                tasks =json.load(tf)
         except (OSError, json.JSONDecodeError):
             tasks = []
+
 
         new_id = self._next_id(tasks)  # get next available id
         timestamp = datetime.now().isoformat(timespec="seconds") 

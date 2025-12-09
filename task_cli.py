@@ -1,5 +1,14 @@
 #! /usr/bin/env python3
-import argparse 
+import argparse
+from task_manager import TaskManager
+
+tm = TaskManager()
+
+def command_add(args: argparse.Namespace) -> None:
+    """ Add a new task """
+    t = tm.add_task(args.description)
+    print(f"Task added: {t['id']} - {t['description']} - {t['status']}")
+
 
 def command_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -12,6 +21,7 @@ def command_parser() -> argparse.ArgumentParser:
     # add 
     p_add = subparsers.add_parser("add", help="Add a new task")
     p_add.add_argument("description", help="Description of the task")
+    p_add.set_defaults(func=command_add)
 
     # update
     p_update = subparsers.add_parser("update", help="Update an existing task")
@@ -38,7 +48,8 @@ def command_parser() -> argparse.ArgumentParser:
 
 def main():
     args = command_parser().parse_args()
-    print("Parsed args:", args)
+    # subparsers attach a 'func' attribute 
+    args.func(args)
 
 if __name__ == "__main__":
     main()
