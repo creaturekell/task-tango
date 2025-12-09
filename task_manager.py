@@ -9,6 +9,10 @@ class TaskManager:
     def __init__(self, path: str = "tasks.json") -> None:
         self.path = path
 
+    # -----------------------------------------
+    #  Internal Methods
+    # -----------------------------------------
+
     def _next_id(self, tasks: List[Dict[str, Any]]) -> int:
         """ Get the next available id """
         return 1 if not tasks else max(t["id"] for t in tasks) + 1
@@ -54,6 +58,5 @@ class TaskManager:
                 json.dump(tasks, tf, indent=2)
         except (OSError, json.JSONDecodeError):
             raise ValueError(f"Failed to save tasks to {self.path}")
-
 
         return task
