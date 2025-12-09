@@ -1,0 +1,27 @@
+
+# Env folders
+.env/
+.venv/
+venv/
+env/
+
+# Runtime task data (never commit)
+tasks.json
+
+# Test-related temp files
+tmp/
+*.tmp
+
+# pytest cache
+.pytest_cache/
+__pycache__/
+
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS files
+.DS_Store
