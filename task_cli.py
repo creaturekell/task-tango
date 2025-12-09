@@ -10,10 +10,28 @@ def command_add(args: argparse.Namespace) -> None:
     print(f"Task added: {t['id']} - {t['description']} - {t['status']}")
 
 def command_list(args: argparse.Namespace) -> None:
-    """ List all tasks """
-    tasks = tm.list_tasks()
+    """ List all tasks or filtered by status """
+    status = args.status # optional status filter
+
+    try:
+        tasks = tm.list_tasks(status=status)
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
+    if not tasks:
+        if status:
+            print(f"No tasks found with status: {status}.")
+        else:
+            print("No tasks found.")
+        return
+
+    print(f"\nListing {len(tasks)} tasks:")
+    print("-" * 40)
     for t in tasks:
         print(f"{t['id']} - {t['description']} - {t['status']}")
+
+    print("\n")
 
 def command_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
