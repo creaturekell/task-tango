@@ -83,6 +83,9 @@ class TaskManager:
         
         """
 
+        if not description or not description.strip():
+            raise ValueError("Task Description cannot be empty.")
+
         tasks = self._get_tasks()
         new_id = self._next_id(tasks)  # get next available id
         timestamp = self._get_timestamp()
@@ -113,6 +116,9 @@ class TaskManager:
 
     def update_task(self, id: int, updated_description: str) -> Dict[str, Any]:
         """ Update an existing task """
+
+        if not updated_description or not updated_description.strip():
+            raise ValueError("Updated Task Description cannot be empty.")
 
         tasks = self._get_tasks()
         task = self._find_task(tasks, id)
