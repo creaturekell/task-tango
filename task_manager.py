@@ -6,6 +6,12 @@ from typing import Dict, List, Optional, Any
 class TaskManager:
     """ Core task management logic """
 
+    STATUS_TODO = "todo"
+    STATUS_IN_PROGRESS = "in-progress"
+    STATUS_DONE = "done"
+
+    VALID_STATUSES = {STATUS_TODO, STATUS_IN_PROGRESS, STATUS_DONE}
+
     def __init__(self, path: str = "tasks.json") -> None:
         self.path = path
 
@@ -80,7 +86,7 @@ class TaskManager:
         task = {
             "id": new_id,
             "description": description,
-            "status": "todo",
+            "status": self.STATUS_TODO,
             "createdAt": timestamp,
             "updatedAt": timestamp,
         }
@@ -96,7 +102,7 @@ class TaskManager:
         tasks = self._get_tasks()
         if status is None:
             return tasks
-        if status not in {"todo", "in-progress","done"}:
+        if status not in self.VALID_STATUSES:
             raise ValueError(f"Invalid status filter: {status}")
         
         return [t for t in tasks if t.get("status") == status]  # filter tasks by status
@@ -129,9 +135,9 @@ class TaskManager:
 
     def mark_in_progress(self, id: int) -> Dict[str, Any]:
         """ Mark a task as in progress """
-        return self._update_task_status(id, "in-progress")
+        return self._update_task_status(id, self.STATUS_IN_PROGRESS)
 
 
     def mark_done(self, id: int) -> Dict[str, Any]:
         """ Mark a task as done """
-        return self._update_task_status(id, "done")
+        return self._update_task_status(id, self.STATUS_DONE)
