@@ -76,7 +76,7 @@ def test_update_task_changes_description_and_updated_at(tmp_path):
     assert updated["updatedAt"] != original["updatedAt"]
 
     # persisted
-    tasks = tm.get_tasks()
+    tasks = tm._get_tasks()
     assert tasks[0]["description"] == "New description"
 
 def test_delete_task_removes_task_from_list(tmp_path):
@@ -104,7 +104,7 @@ def test_mark_in_progress_changes_status_and_updated_at(tmp_path):
     assert updated["updatedAt"] != original["updatedAt"]
 
     # persisted
-    tasks = tm.get_tasks()
+    tasks = tm._get_tasks()
     assert tasks[0]["status"] == "in-progress"
 
 def test_mark_done_changes_status_and_updated_at(tmp_path):
@@ -119,6 +119,6 @@ def test_mark_done_changes_status_and_updated_at(tmp_path):
     assert updated["updatedAt"] != original["updatedAt"]
     
     # persisted
-    tasks = tm.get_tasks()
+    tasks = tm._get_tasks()
     assert tasks[0]["status"] == "done"
     assert tasks[0]["updatedAt"] != original["updatedAt"]

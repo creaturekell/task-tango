@@ -17,7 +17,7 @@ class TaskManager:
         """ Get the next available id """
         return 1 if not tasks else max(t["id"] for t in tasks) + 1
 
-    def get_tasks(self) -> List[Dict[str, Any]]:
+    def _get_tasks(self) -> List[Dict[str, Any]]:
         """ Get all tasks from file """
         try:
             with open(self.path,"r",encoding="utf-8") as tf:
@@ -36,7 +36,7 @@ class TaskManager:
                 return t
         return None
 
-    def save_tasks(self, tasks: List[Dict[str, Any]]) -> None:
+    def _save_tasks(self, tasks: List[Dict[str, Any]]) -> None:
         """ Save tasks to file """
         try:
             with open(self.path,"w", encoding="utf-8") as tf:
@@ -48,7 +48,7 @@ class TaskManager:
     #  Public Methods
     # -----------------------------------------
     
-    def add_task(self, description) -> Dict[str, Any]:
+    def add_task(self, description: str) -> Dict[str, Any]:
         """ Add a new task 
 
         1. get list of tasks from file
@@ -61,7 +61,7 @@ class TaskManager:
         
         """
 
-        tasks = self.get_tasks()
+        tasks = self._get_tasks()
         new_id = self._next_id(tasks)  # get next available id
         timestamp = self._get_timestamp()
         
@@ -74,14 +74,14 @@ class TaskManager:
         }
 
         tasks.append(task)
-        self.save_tasks(tasks)
+        self._save_tasks(tasks)
 
         return task
 
     def list_tasks(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
         """ List all tasks """
         
-        tasks = self.get_tasks()
+        tasks = self._get_tasks()
         if status is None:
             return tasks
         if status not in {"todo", "in-progress","done"}:
@@ -89,10 +89,10 @@ class TaskManager:
         
         return [t for t in tasks if t.get("status") == status]  # filter tasks by status
 
-    def update_task(self, id: int, updated_description: [str]) -> Dict[str, Any]:
+    def update_task(self, id: int, updated_description: str) -> Dict[str, Any]:
         """ Update an existing task """
 
-        tasks = self.get_tasks()
+        tasks = self._get_tasks()
         task = self._find_task(tasks, id)
         if task is None:
             raise ValueError(f"Task with id {id} not found.")
@@ -100,44 +100,44 @@ class TaskManager:
         task["description"] = updated_description
         task["updatedAt"] = self._get_timestamp()
 
-        self.save_tasks(tasks)
+        self._save_tasks(tasks)
         return task
 
-    def delete_task(self, id: int) -> None:
+    def delete_task(self, id: int) -> Dict[str, Any]:
         """ Delete an existing task """
 
-        tasks = self.get_tasks()
+        tasks = self._get_tasks()
         task = self._find_task(tasks, id)
         if task is None:
             raise ValueError(f"Task with id {id} not found.")
         
         tasks.remove(task)
-        self.save_tasks(tasks)
+        self._save_tasks(tasks)
         return task
 
     def mark_in_progress(self, id: int) -> Dict[str, Any]:
         """ Mark a task as in progress """
 
-        tasks = self.get_tasks()
+        tasks = self._get_tasks()
         task = self._find_task(tasks, id)
         if task is None:
             raise ValueError(f"Task with id {id} not found.")
         
         task["status"] = "in-progress"
         task["updatedAt"] = self._get_timestamp()
-        self.save_tasks(tasks)
+        self._save_tasks(tasks)
         return task
 
     def mark_done(self, id: int) -> Dict[str, Any]:
         """ Mark a task as done """
 
-        tasks = self.get_tasks()
+        tasks = self._get_tasks()
         task = self._find_task(tasks, id)
         if task is None:
             raise ValueError(f"Task with id {id} not found.")
         
         task["status"] = "done"
         task["updatedAt"] = self._get_timestamp()
-        self.save_tasks(tasks)
+        self._save_tasks(tasks)
         return task
         
