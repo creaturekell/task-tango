@@ -106,4 +106,19 @@ def test_mark_in_progress_changes_status_and_updated_at(tmp_path):
     # persisted
     tasks = tm.get_tasks()
     assert tasks[0]["status"] == "in-progress"
+
+def test_mark_done_changes_status_and_updated_at(tmp_path):
+    tm = make_tm(tmp_path)
+
+    original = tm.add_task("Buy milk")
+    sleep(3)
+    updated = tm.mark_done(original["id"])
+
+    assert updated["id"] == original["id"]
+    assert updated["status"] == "done"
+    assert updated["updatedAt"] != original["updatedAt"]
     
+    # persisted
+    tasks = tm.get_tasks()
+    assert tasks[0]["status"] == "done"
+    assert tasks[0]["updatedAt"] != original["updatedAt"]

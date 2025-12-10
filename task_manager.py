@@ -127,4 +127,17 @@ class TaskManager:
         task["updatedAt"] = self._get_timestamp()
         self.save_tasks(tasks)
         return task
+
+    def mark_done(self, id: int) -> Dict[str, Any]:
+        """ Mark a task as done """
+
+        tasks = self.get_tasks()
+        task = self._find_task(tasks, id)
+        if task is None:
+            raise ValueError(f"Task with id {id} not found.")
+        
+        task["status"] = "done"
+        task["updatedAt"] = self._get_timestamp()
+        self.save_tasks(tasks)
+        return task
         
