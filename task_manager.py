@@ -28,9 +28,13 @@ class TaskManager:
         try:
             with open(self.path,"r",encoding="utf-8") as tf:
                 return json.load(tf)
-        except (OSError, json.JSONDecodeError):
-            return []
-    
+        except FileNotFoundError:
+            return [] # File doesn't exist yet
+        except json.JSONDecodeError:
+            return [] # File is empty or invalid JSON
+        except OSError as e:
+            raise ValueError(f"Failed to read tasks from {self.path}: {e}")
+
     def _get_timestamp(self) -> str:
         """ Get the current timestamp """
         return datetime.now().isoformat(timespec="seconds")
