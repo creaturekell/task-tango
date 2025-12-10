@@ -44,6 +44,18 @@ class TaskManager:
         except (OSError, json.JSONDecodeError):
             raise ValueError(f"Failed to save tasks to {self.path}")
 
+    def _update_task_status(self, task_id: int, new_status: str) -> Dict[str, Any]:
+        """ Update the status of a task """
+        tasks = self._get_tasks()
+        task = self._find_task(tasks, task_id)
+        if task is None:
+            raise ValueError(f"Task with id {task_id} not found.")
+        
+        task["status"] = new_status
+        task["updatedAt"] = self._get_timestamp()
+        self._save_tasks(tasks)
+        return task
+
     # -----------------------------------------
     #  Public Methods
     # -----------------------------------------
@@ -117,27 +129,9 @@ class TaskManager:
 
     def mark_in_progress(self, id: int) -> Dict[str, Any]:
         """ Mark a task as in progress """
+        return self._update_task_status(id, "in-progress")
 
-        tasks = self._get_tasks()
-        task = self._find_task(tasks, id)
-        if task is None:
-            raise ValueError(f"Task with id {id} not found.")
-        
-        task["status"] = "in-progress"
-        task["updatedAt"] = self._get_timestamp()
-        self._save_tasks(tasks)
-        return task
 
     def mark_done(self, id: int) -> Dict[str, Any]:
         """ Mark a task as done """
-
-        tasks = self._get_tasks()
-        task = self._find_task(tasks, id)
-        if task is None:
-            raise ValueError(f"Task with id {id} not found.")
-        
-        task["status"] = "done"
-        task["updatedAt"] = self._get_timestamp()
-        self._save_tasks(tasks)
-        return task
-        
+        return self._update_task_status(id, "done")
