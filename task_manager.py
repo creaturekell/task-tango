@@ -42,7 +42,7 @@ class TaskManager:
     def _find_task(self, tasks: List[Dict[str, Any]], task_id: int) -> Optional[Dict[str, Any]]:
         """ Find a task by id """
         for t in tasks:
-            if t.get("id") == task_id:
+            if t["id"] == task_id:
                 return t
         return None
 
