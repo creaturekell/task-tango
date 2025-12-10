@@ -16,6 +16,9 @@ tmp/
 .pytest_cache/
 __pycache__/
 
+# ruff cache
+.ruff_cache/
+
 
 # IDE files
 .vscode/
