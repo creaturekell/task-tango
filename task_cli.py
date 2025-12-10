@@ -78,6 +78,11 @@ def command_parser() -> argparse.ArgumentParser:
     p_add.add_argument("description", help="Description of the task")
     p_add.set_defaults(func=command_add)
 
+    # list
+    p_list = subparsers.add_parser("list", help="List tasks")
+    p_list.add_argument("status", nargs="?", help="Optional status filter: todo, in-progress, done")
+    p_list.set_defaults(func=command_list)
+
     # update
     p_update = subparsers.add_parser("update", help="Update an existing task")
     p_update.add_argument("id", help="ID of the task to update")
@@ -96,11 +101,6 @@ def command_parser() -> argparse.ArgumentParser:
     # mark-done
     p_md = subparsers.add_parser("mark-done", help="Mark task as done")
     p_md.add_argument("id", help="ID of the task")
-
-    # list
-    p_list = subparsers.add_parser("list", help="List tasks")
-    p_list.add_argument("status", nargs="?", help="Optional status filter: todo, in-progress, done")
-    p_list.set_defaults(func=command_list)
 
     return parser 
 
