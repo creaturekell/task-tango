@@ -114,3 +114,17 @@ class TaskManager:
         tasks.remove(task)
         self.save_tasks(tasks)
         return task
+
+    def mark_in_progress(self, id: int) -> Dict[str, Any]:
+        """ Mark a task as in progress """
+
+        tasks = self.get_tasks()
+        task = self._find_task(tasks, id)
+        if task is None:
+            raise ValueError(f"Task with id {id} not found.")
+        
+        task["status"] = "in-progress"
+        task["updatedAt"] = self._get_timestamp()
+        self.save_tasks(tasks)
+        return task
+        

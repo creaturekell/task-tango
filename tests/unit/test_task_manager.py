@@ -91,3 +91,19 @@ def test_delete_task_removes_task_from_list(tmp_path):
     tasks = tm.list_tasks()
     assert len(tasks) == 2
     assert {t["id"] for t in tasks} == {t1["id"], t3["id"]}
+
+def test_mark_in_progress_changes_status_and_updated_at(tmp_path):
+    tm = make_tm(tmp_path)
+
+    original = tm.add_task("Buy milk")
+    sleep(3)
+    updated = tm.mark_in_progress(original["id"])
+
+    assert updated["id"] == original["id"]
+    assert updated["status"] == "in-progress"
+    assert updated["updatedAt"] != original["updatedAt"]
+
+    # persisted
+    tasks = tm.get_tasks()
+    assert tasks[0]["status"] == "in-progress"
+    

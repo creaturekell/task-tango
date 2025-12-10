@@ -64,6 +64,21 @@ def command_delete(args: argparse.Namespace) -> None:
         print(f"Error: {e}")
         return
 
+def command_mark_in_progress(args: argparse.Namespace) -> None:
+    """ Mark a task as in progress """
+    try:
+        task_id = int(args.id)
+    except ValueError:
+        print(f"Error: Invalid task ID: {args.id}")
+        return
+    
+    try:
+        tm.mark_in_progress(task_id)
+        print(f"Task marked as in progress: {task_id}")
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
 
 def command_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -97,6 +112,7 @@ def command_parser() -> argparse.ArgumentParser:
     # mark-in-progress
     p_mip = subparsers.add_parser("mark-in-progress", help="Mark task as in progress")
     p_mip.add_argument("id", help="ID of the task")
+    p_mip.set_defaults(func=command_mark_in_progress)
 
     # mark-done
     p_md = subparsers.add_parser("mark-done", help="Mark task as done")
